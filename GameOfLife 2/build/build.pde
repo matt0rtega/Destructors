@@ -16,7 +16,7 @@ PImage opencvcam;
 
 
 void setup() {
-  size(640, 360, P2D);
+  size(1280, 720, P2D);
   pixelDensity(1);
   //frameRate(15);
   
@@ -61,7 +61,7 @@ void draw() {
   }
 
   //backgroundimg.resize(width, height);
-  scale(2);
+  scale(4);
   image(backgroundimg, 0, 0);
   
   gol.generate();
