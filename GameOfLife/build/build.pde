@@ -11,8 +11,8 @@
 GOL gol;
 
 void setup() {
-  size(640, 360);
-  frameRate(15);
+  size(640, 360, P2D);
+  //frameRate(15);
   gol = new GOL();
 }
 
