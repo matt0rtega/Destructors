@@ -42,8 +42,8 @@ boolean displayPreview = true;
 Rectangle[] faces;
 
 public void setup() {
+  //size(540, 960, P3D);
   
-  //fullScreen(P3D);
   
 
   camWidth = 960/2;
@@ -106,7 +106,7 @@ public void draw() {
   imageMode(CENTER);
   translate(width/2, height/2);
   rotate(radians(-90));
-  scale(2);
+  scale(4);
   image(backgroundimg, 0, 0);
   gol.generate();
   gol.displayPixels(img);
@@ -170,7 +170,6 @@ public void mouseReleased(){
 public void takeSnapshot(){
   mousePressed();
   mouseReleased();
-  //count = 0;
 }
 
 public void exportFrame(){
@@ -213,11 +212,17 @@ public void checkCameras(){
 }
 
 public void keyPressed(){
-  boolean toggleState = gol.colorToggle;
-  gol.colorToggle = !toggleState;
 
-  mousePressed();
-  mouseReleased();
+  if(key == 't'){
+    gol.colorToggle = !gol.colorToggle;
+    gol.reset();
+  }
+
+  if(key == 'r'){
+    mousePressed();
+    mouseReleased();
+  }
+
 }
 
 // Thank you Fabio Cionini design www.todo.to.it
@@ -422,7 +427,7 @@ class GOL {
   }
 
 }
-  public void settings() {  size(540, 960, P3D);  pixelDensity(1); }
+  public void settings() {  fullScreen(P3D);  pixelDensity(1); }
   static public void main(String[] passedArgs) {
     String[] appletArgs = new String[] { "build" };
     if (passedArgs != null) {

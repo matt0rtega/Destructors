@@ -21,8 +21,8 @@ boolean displayPreview = true;
 Rectangle[] faces;
 
 void setup() {
-  size(540, 960, P3D);
-  //fullScreen(P3D);
+  //size(540, 960, P3D);
+  fullScreen(P3D);
   pixelDensity(1);
 
   camWidth = 960/2;
@@ -85,7 +85,7 @@ void draw() {
   imageMode(CENTER);
   translate(width/2, height/2);
   rotate(radians(-90));
-  scale(2);
+  scale(4);
   image(backgroundimg, 0, 0);
   gol.generate();
   gol.displayPixels(img);
@@ -149,7 +149,6 @@ void mouseReleased(){
 void takeSnapshot(){
   mousePressed();
   mouseReleased();
-  //count = 0;
 }
 
 void exportFrame(){
@@ -192,11 +191,17 @@ void checkCameras(){
 }
 
 void keyPressed(){
-  boolean toggleState = gol.colorToggle;
-  gol.colorToggle = !toggleState;
 
-  mousePressed();
-  mouseReleased();
+  if(key == 't'){
+    gol.colorToggle = !gol.colorToggle;
+    gol.reset();
+  }
+
+  if(key == 'r'){
+    mousePressed();
+    mouseReleased();
+  }
+
 }
 
 // Thank you Fabio Cionini design www.todo.to.it
