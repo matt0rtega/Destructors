@@ -30,6 +30,8 @@ GOL gol;
 PImage img;
 PImage backgroundimg;
 
+PImage[] collages;
+
 int camWidth;
 int camHeight;
 
@@ -41,6 +43,8 @@ boolean displayPreview = true;
 
 Rectangle[] faces;
 
+PFont f;
+
 public void setup() {
   //size(540, 960, P3D);
   
@@ -49,7 +53,16 @@ public void setup() {
   camWidth = 960/2;
   camHeight = 540/2;
 
-  orientation(PORTRAIT);
+  // Create the font
+  printArray(PFont.list());
+  f = createFont("SourceCodePro-Regular.ttf", 24);
+  textFont(f);
+
+  collages = new PImage[25];
+
+  for(int i=0; i<collages.length; i++){
+    collages[i] = loadImage("collage/img"+i+".png");
+  }
 
   gol = new GOL(camWidth, camHeight);
 
@@ -83,8 +96,6 @@ public void draw() {
   faces = opencv.detect();
   //println(faces.length, gol.prob);
 
-
-
   if(faces.length > 0 && gol.prob < 0.5f){
     gol.colorToggle = true;
     takeSnapshot();
@@ -95,18 +106,11 @@ public void draw() {
     gol.reset();
   }
 
-  //backgroundimg.resize(width, height);
-
-  // imageMode(CENTER);
-  // translate(mouseX, mouseY);
-  // rotate(radians(-90));
-  //scale(2);
-  //image(backgroundimg, 0, 0);
   pushMatrix();
   imageMode(CENTER);
   translate(width/2, height/2);
   rotate(radians(-90));
-  scale(4);
+  scale(3.35f);
   image(backgroundimg, 0, 0);
   gol.generate();
   gol.displayPixels(img);
@@ -114,7 +118,7 @@ public void draw() {
 
 
   if (displayPreview){
-    // Feed
+    // Camera Preview
     pushMatrix();
     imageMode(CORNER);
     translate(0, height-opencv.height);
@@ -123,13 +127,11 @@ public void draw() {
     popMatrix();
   }
 
-}
-
-public void showImagev1(){
-
+  text("Please wait...", mouseX, mouseY);
 }
 
 public void drawFaces(){
+
   noFill();
   stroke(0, 255, 0);
   strokeWeight(3);
@@ -138,11 +140,11 @@ public void drawFaces(){
     //println(faces[i].x + "," + faces[i].y);
     rect(faces[i].x, faces[i].y, faces[i].width, faces[i].height);
   }
+
 }
 
 // reset board when mouse is pressed
 public void mousePressed() {
-  //exportFrame();
 
   displayPreview = false;
 
@@ -150,8 +152,6 @@ public void mousePressed() {
   backgroundimg.resize(camWidth, camHeight);
   backgroundimg = img;
 
-
-  //println(frameRate);
 }
 
 public void mouseReleased(){
@@ -159,12 +159,13 @@ public void mouseReleased(){
   exportFrame();
 
   img = cam.get();
-  //img.resize(width/2, height/2);
-  //backgroundimg.resize(width/2, height/2);
-
 
   gol.reset();
   gol.init();
+}
+
+public void status(){
+
 }
 
 public void takeSnapshot(){
@@ -183,8 +184,6 @@ public void exportFrame(){
   output.image(img, 0, 0);
   output.endDraw();
 
-  // img.save("111017/bitrot"+timestamp()+"_0.png");
-  // backgroundimg.save("111017/bitrot"+timestamp()+"_1.png");
   output.save("111017/bitrot"+timestamp()+"_3.png");
   saveFrame("111017/bitrot"+timestamp()+"_4.png");
 
@@ -213,12 +212,16 @@ public void checkCameras(){
 
 public void keyPressed(){
 
+  if(key == 'c'){
+    gol.changeImage();
+  }
+
   if(key == 't'){
     gol.colorToggle = !gol.colorToggle;
     gol.reset();
   }
 
-  if(key == 'r'){
+  if(key == 's'){
     mousePressed();
     mouseReleased();
   }
@@ -286,7 +289,10 @@ class GOL {
 
   int counter = 0;
 
-  float prob = 0.9f;
+  float probParam = 0.7f;
+  float prob = probParam;
+
+  int collageSelector = 0;
 
   int colorSelector = 0;
   boolean colorToggle = true;
@@ -312,7 +318,7 @@ class GOL {
         } else {
           board[i][j] = 1;
         }
-        //board[i][j] = int(random(2));
+
       }
     }
   }
@@ -354,13 +360,21 @@ class GOL {
 
     board = next;
 
-
     if(prob > 0.01f){
       prob -= 0.002f;
     }
   }
 
+  public void changeImage(){
+    int randSelector = (int)random(0, collages.length);
+
+    collageSelector = randSelector;
+  }
+
   public void reset(){
+
+    changeImage();
+
     int randColor = (int)random(0, colors.length);
 
     if(randColor != colorSelector){
@@ -370,7 +384,7 @@ class GOL {
       colorSelector = randColor;
     }
 
-    prob = 0.9f;
+    prob = probParam;
   }
 
   public void display(PImage img) {
@@ -380,10 +394,7 @@ class GOL {
         float co = map(noise(i * 0.02f, j * 0.01f), 0, 1, 0, 255);
 
         if ((board[i][j] == 1)) fill(0, 0);
-        //Kind of cool
-        //if ((board[i][j] == 1)) img.set(i*w, j*w, 0);
         else fill(img.get(i*w, j*w));
-        //stroke(0);
         noStroke();
         rect(i*w, j*w, w, w);
       }
@@ -392,7 +403,11 @@ class GOL {
 
   public void displayPixels(PImage img) {
 
+    collages[collageSelector].loadPixels();
+
     img.loadPixels();
+    backgroundimg.loadPixels();
+
     for (int x=1; x<columns-1; x++){
       for (int y=1; y<rows-1; y++){
 
@@ -408,15 +423,13 @@ class GOL {
 
         if ((board[x][y] == 1)) {
           if(colorToggle){
-            if ((board[x][y] == 1)) img.pixels[loc] = color(img.pixels[loc], 0);
+            if ((board[x][y] == 1)) img.pixels[loc] = backgroundimg.pixels[loc];
           } else {
-            if ((board[x][y] == 1)) img.pixels[loc] = colors[colorSelector];
+            //if ((board[x][y] == 1)) img.pixels[loc] = colors[colorSelector];
+            if ((board[x][y] == 1)) img.pixels[loc] = collages[collageSelector].pixels[loc];
           }
         }
 
-
-        //Kind of cool
-        //if ((board[i][j] == 1)) img.set(i*w, j*w, 0);
         else img.pixels[loc] = img.pixels[loc];
       }
     }

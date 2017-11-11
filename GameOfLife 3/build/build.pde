@@ -9,6 +9,8 @@ GOL gol;
 PImage img;
 PImage backgroundimg;
 
+PImage[] collages;
+
 int camWidth;
 int camHeight;
 
@@ -20,6 +22,8 @@ boolean displayPreview = true;
 
 Rectangle[] faces;
 
+PFont f;
+
 void setup() {
   //size(540, 960, P3D);
   fullScreen(P3D);
@@ -28,7 +32,16 @@ void setup() {
   camWidth = 960/2;
   camHeight = 540/2;
 
-  orientation(PORTRAIT);
+  // Create the font
+  printArray(PFont.list());
+  f = createFont("SourceCodePro-Regular.ttf", 24);
+  textFont(f);
+
+  collages = new PImage[25];
+
+  for(int i=0; i<collages.length; i++){
+    collages[i] = loadImage("collage/img"+i+".png");
+  }
 
   gol = new GOL(camWidth, camHeight);
 
@@ -93,6 +106,7 @@ void draw() {
     popMatrix();
   }
 
+  text("Please wait...", mouseX, mouseY);
 }
 
 void drawFaces(){
@@ -127,6 +141,10 @@ void mouseReleased(){
 
   gol.reset();
   gol.init();
+}
+
+void status(){
+
 }
 
 void takeSnapshot(){
@@ -173,12 +191,16 @@ void checkCameras(){
 
 void keyPressed(){
 
+  if(key == 'c'){
+    gol.changeImage();
+  }
+
   if(key == 't'){
     gol.colorToggle = !gol.colorToggle;
     gol.reset();
   }
 
-  if(key == 'r'){
+  if(key == 's'){
     mousePressed();
     mouseReleased();
   }

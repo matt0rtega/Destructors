@@ -4,8 +4,10 @@ class GOL {
 
   int counter = 0;
 
-  float probParamm = 0.9;
+  float probParam = 0.7;
   float prob = probParam;
+
+  int collageSelector = 0;
 
   int colorSelector = 0;
   boolean colorToggle = true;
@@ -78,7 +80,16 @@ class GOL {
     }
   }
 
+  void changeImage(){
+    int randSelector = (int)random(0, collages.length);
+
+    collageSelector = randSelector;
+  }
+
   void reset(){
+
+    changeImage();
+
     int randColor = (int)random(0, colors.length);
 
     if(randColor != colorSelector){
@@ -107,7 +118,11 @@ class GOL {
 
   void displayPixels(PImage img) {
 
+    collages[collageSelector].loadPixels();
+
     img.loadPixels();
+    backgroundimg.loadPixels();
+
     for (int x=1; x<columns-1; x++){
       for (int y=1; y<rows-1; y++){
 
@@ -123,9 +138,10 @@ class GOL {
 
         if ((board[x][y] == 1)) {
           if(colorToggle){
-            if ((board[x][y] == 1)) img.pixels[loc] = color(img.pixels[loc], 0);
+            if ((board[x][y] == 1)) img.pixels[loc] = backgroundimg.pixels[loc];
           } else {
-            if ((board[x][y] == 1)) img.pixels[loc] = colors[colorSelector];
+            //if ((board[x][y] == 1)) img.pixels[loc] = colors[colorSelector];
+            if ((board[x][y] == 1)) img.pixels[loc] = collages[collageSelector].pixels[loc];
           }
         }
 
