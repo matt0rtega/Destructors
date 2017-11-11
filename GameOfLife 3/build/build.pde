@@ -11,6 +11,8 @@ PImage backgroundimg;
 
 PImage[] collages;
 
+String status = "";
+
 int camWidth;
 int camHeight;
 
@@ -33,8 +35,8 @@ void setup() {
   camHeight = 540/2;
 
   // Create the font
-  printArray(PFont.list());
-  f = createFont("SourceCodePro-Regular.ttf", 24);
+  //printArray(PFont.list());
+  f = createFont("Monospaced-24.vlw", 24);
   textFont(f);
 
   collages = new PImage[25];
@@ -103,10 +105,12 @@ void draw() {
     translate(0, height-opencv.height);
     drawFaces();
     image(opencvcam, 0, 0);
+    
+    text("Please wait...", width-(250), mouseY);
     popMatrix();
   }
 
-  text("Please wait...", mouseX, mouseY);
+  
 }
 
 void drawFaces(){
@@ -144,7 +148,11 @@ void mouseReleased(){
 }
 
 void status(){
-
+  if (gol.prob > 0.6){
+    status = "Please wait...";
+  } else {
+    status = "Ready.";
+  }
 }
 
 void takeSnapshot(){
