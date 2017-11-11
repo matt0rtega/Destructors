@@ -4,7 +4,8 @@ class GOL {
 
   int counter = 0;
 
-  float prob = 0.9;
+  float probParamm = 0.9;
+  float prob = probParam;
 
   int colorSelector = 0;
   boolean colorToggle = true;
@@ -30,7 +31,7 @@ class GOL {
         } else {
           board[i][j] = 1;
         }
-        //board[i][j] = int(random(2));
+
       }
     }
   }
@@ -72,7 +73,6 @@ class GOL {
 
     board = next;
 
-
     if(prob > 0.01){
       prob -= 0.002;
     }
@@ -88,7 +88,7 @@ class GOL {
       colorSelector = randColor;
     }
 
-    prob = 0.9;
+    prob = probParam;
   }
 
   void display(PImage img) {
@@ -98,10 +98,7 @@ class GOL {
         float co = map(noise(i * 0.02, j * 0.01), 0, 1, 0, 255);
 
         if ((board[i][j] == 1)) fill(0, 0);
-        //Kind of cool
-        //if ((board[i][j] == 1)) img.set(i*w, j*w, 0);
         else fill(img.get(i*w, j*w));
-        //stroke(0);
         noStroke();
         rect(i*w, j*w, w, w);
       }
@@ -132,9 +129,6 @@ class GOL {
           }
         }
 
-
-        //Kind of cool
-        //if ((board[i][j] == 1)) img.set(i*w, j*w, 0);
         else img.pixels[loc] = img.pixels[loc];
       }
     }

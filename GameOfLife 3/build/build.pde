@@ -62,8 +62,6 @@ void draw() {
   faces = opencv.detect();
   //println(faces.length, gol.prob);
 
-
-
   if(faces.length > 0 && gol.prob < 0.5){
     gol.colorToggle = true;
     takeSnapshot();
@@ -74,18 +72,11 @@ void draw() {
     gol.reset();
   }
 
-  //backgroundimg.resize(width, height);
-
-  // imageMode(CENTER);
-  // translate(mouseX, mouseY);
-  // rotate(radians(-90));
-  //scale(2);
-  //image(backgroundimg, 0, 0);
   pushMatrix();
   imageMode(CENTER);
   translate(width/2, height/2);
   rotate(radians(-90));
-  scale(4);
+  scale(3.35);
   image(backgroundimg, 0, 0);
   gol.generate();
   gol.displayPixels(img);
@@ -93,7 +84,7 @@ void draw() {
 
 
   if (displayPreview){
-    // Feed
+    // Camera Preview
     pushMatrix();
     imageMode(CORNER);
     translate(0, height-opencv.height);
@@ -104,11 +95,8 @@ void draw() {
 
 }
 
-void showImagev1(){
-
-}
-
 void drawFaces(){
+
   noFill();
   stroke(0, 255, 0);
   strokeWeight(3);
@@ -117,11 +105,11 @@ void drawFaces(){
     //println(faces[i].x + "," + faces[i].y);
     rect(faces[i].x, faces[i].y, faces[i].width, faces[i].height);
   }
+
 }
 
 // reset board when mouse is pressed
 void mousePressed() {
-  //exportFrame();
 
   displayPreview = false;
 
@@ -129,8 +117,6 @@ void mousePressed() {
   backgroundimg.resize(camWidth, camHeight);
   backgroundimg = img;
 
-
-  //println(frameRate);
 }
 
 void mouseReleased(){
@@ -138,9 +124,6 @@ void mouseReleased(){
   exportFrame();
 
   img = cam.get();
-  //img.resize(width/2, height/2);
-  //backgroundimg.resize(width/2, height/2);
-
 
   gol.reset();
   gol.init();
@@ -162,8 +145,6 @@ void exportFrame(){
   output.image(img, 0, 0);
   output.endDraw();
 
-  // img.save("111017/bitrot"+timestamp()+"_0.png");
-  // backgroundimg.save("111017/bitrot"+timestamp()+"_1.png");
   output.save("111017/bitrot"+timestamp()+"_3.png");
   saveFrame("111017/bitrot"+timestamp()+"_4.png");
 
